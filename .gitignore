@@ -1,0 +1,8 @@
+# macOS metadata
+.DS_Store
+
+# Local state
+.state/
+
+# Incoming assets (kept outside candidate)
+assets-inbox/

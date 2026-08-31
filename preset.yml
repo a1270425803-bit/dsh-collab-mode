@@ -1,0 +1,2 @@
+name: 协作模式 v4.3 r2.1
+description: v4.3 轻量状态机：双停点、版本绑定、Executor 候选冻结与 Fresh Reviewer 独立审查；角色默认模型由共享目录绑定，直令只覆盖单次原生子代理实例。
