@@ -23,6 +23,25 @@
 
 `dsh-collab-mode` 是 DSH（DeepSeek Harness）的 Agent preset：把容易失控的 AI 协作，收敛成一条可追踪的轻量状态机。它用双停点批准明确“做什么”和“怎么做”，用不可移动的候选引用冻结交付，再交给全新上下文的 Reviewer 独立审查；任何一步不满足条件，就停止或回到批准边界内返工，而不是凭对话惯性继续推进。
 
+## 演进历程
+
+这套模式不是一次设计出来的，而是 2026 年 6 月起十次实战迭代的结果——从三个 CLI 窗口之间人工复制粘贴 prompt，到今天 DSH 里的自动化子 Agent 派发：
+
+| 阶段 | 时间 | 形态 | 关键教训 |
+|---|---|---|---|
+| 纸面规则 | 6 月初–8/4 | v2.1 → v3.1 规则文档迭代：三窗口分责、强制落盘、子 Agent 辩论 | 没有机制约束的规则会被「顺手」打破 |
+| CLI 互调 | 8/4–8/8 | 三个 CLI（Claude / Codex / Kimi）互相调用，人工复制粘贴 prompt 传递任务 | 人工传递可靠但费人；自动化编排器始终没接真实 CLI |
+| 硬闸实验 | 8/8–8/11 | 自研 planner_gate：1747 行闸门 + 1127 行自测、逐文件批准账本、hash 防篡改 | 机制倒挂：闸门比业务重，真实试跑从未开始，4 天即弃 |
+| 回归轻量 | 8/11 | 只留两停点 + 简单/复杂分支，安全边界交还宿主 sandbox | 确认应发生在计划级，而不是文件级 |
+| CLI 跨端互派 | 8/13 | cross-terminal-dispatch：三端 CLI 命令互派，审查跨端派给不同模型 | 跨端的价值是异构审查，不让同一模型自圆其说 |
+| DSH preset 化 | 8/14 | v4.0 迁入 DSH 用户级 preset：角色书内嵌 persona、16 技能、7 派发实例 | 规则从文档约定变成宿主可调用的真实工具 |
+| v4.1–v4.3 硬化 | 8/15–8/17 | 治理状态机、常驻内核、对抗审查、候选冻结与内容寻址 | 状态要有唯一真源，批准要绑定版本与内容摘要 |
+| R2 动态路由 | 8 月下旬 | 共享 route catalog：模型路由可注册、可核验 | 写死的路由会过期，注册制才能管住 |
+| R2.1 直令路由 | 8 月底 | 直令指定模型 → 精确 route_id → route_bind_once 单次绑定 | 灵活性受控：直令即时生效，但不出注册表 |
+| 开源 | 9/1 | r2.1 发布到本仓库 | 这套思想第一次离开本机 |
+
+完整演进考古（含「加过又删」的 11 项机制、每次迭代的方案/执行/审查报告）保留在作者的私有档案库；本仓库是这条主线的现行开源形态。
+
 ## 特性
 
 - 🛑 **双停点批准**：先确认版本化需求，再确认方案、路由、范围与风险。
@@ -174,6 +193,25 @@ A：不会。脚本会检查真实文件、权限、JSON 字段和 digest；校�
 ## What is this?
 
 `dsh-collab-mode` is the DSH (DeepSeek Harness) Agent preset for turning failure-prone AI collaboration into a traceable, lightweight state machine. Two approval gates clarify what to do and how to do it; immutable candidate references freeze the deliverable; a fresh Reviewer independently checks the same candidate. When a condition is not met, the process stops or returns for bounded rework instead of continuing on conversational momentum.
+
+## Evolution
+
+This preset was not designed in one sitting. It is the result of ten iterations since June 2026 — evolving from manually copy-pasting prompts between three CLI windows to automated subagent dispatch in DSH:
+
+| Stage | Period | Form | Lesson |
+|---|---|---|---|
+| Paper rules | early Jun–Aug 4 | Rule-doc iterations v2.1 → v3.1: three-window split of duties, mandatory persistence, subagent debates | Rules without enforcement get broken "casually" |
+| CLI relay | Aug 4–8 | Three CLIs (Claude / Codex / Kimi) calling each other, prompts relayed by hand | Manual relay works but costs human time; the orchestrator never touched a real CLI |
+| Hard gate | Aug 8–11 | Self-built planner_gate: a 1,747-line gate with 1,127 lines of self-tests, per-file approval ledger, hash anti-tamper | Mechanism inversion: the gate outweighed the work; abandoned in 4 days |
+| Back to lightweight | Aug 11 | Two approval gates + simple/complex branch; safety returned to the host sandbox | Approve at plan level, not file level |
+| Cross-CLI dispatch | Aug 13 | cross-terminal-dispatch: three CLIs dispatch to each other; reviews sent to a different model | The value of crossing terminals is heterogeneous review |
+| DSH preset | Aug 14 | v4.0 migrated into a DSH user-level preset: embedded personas, 16 skills, 7 dispatch instances | Rules became real host-callable tools |
+| v4.1–v4.3 hardening | Aug 15–17 | Governance state machine, resident kernel, adversarial review, content-addressed freeze | One state source of truth; approvals bind version and digest |
+| R2 dynamic routing | late Aug | Shared route catalog: routes registerable and verifiable | Hard-coded routes rot; registration keeps them honest |
+| R2.1 direct-order routing | late Aug | Direct order → exact route_id → one-shot route_bind_once binding | Flexibility stays inside the registry |
+| Open source | Sep 1 | r2.1 published in this repository | The ideas leave the author's machine |
+
+The full archaeology (11 mechanisms that were added and later removed, plus the plan/execution/review reports of every iteration) is kept in the author's private archive; this repository is the current open-source form of that lineage.
 
 ## Features
 
