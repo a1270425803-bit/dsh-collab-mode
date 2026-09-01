@@ -42,6 +42,18 @@
 
 完整演进考古（含「加过又删」的 11 项机制、每次迭代的方案/执行/审查报告）保留在作者的私有档案库；本仓库是这条主线的现行开源形态。
 
+## 这套思想不只属于 DSH
+
+协作模式的内核是一套**与宿主无关的工程学纪律**，DSH 只是当前载体。迁移到任何支持子 Agent 的 harness（Claude Code、Codex、Kimi CLI、opencode……）时，真正要带走的是：
+
+- **双停点**：需求和方案各确认一次，确认前不创建交付候选；
+- **版本化状态真源**：一个工作区一份 CURRENT，批准绑定版本号与内容摘要，沉默和「继续」不算批准；
+- **候选冻结**：交付物用内容寻址（commit hash / 逐文件 sha256）冻结，任何修改产生新候选；
+- **Fresh Reviewer**：每轮审查都是全新上下文，禁止用执行者自己的结论充当验收；
+- **止损纪律**：同根因最多两次、同周期最多三轮审查，到线就 BLOCKED 等人裁决，不靠换 Agent 改名重置。
+
+CLI 时代这些纪律靠人工传递 prompt 执行；DSH 时代由 preset 自动派发执行。载体变了，纪律没变。
+
 ## 特性
 
 - 🛑 **双停点批准**：先确认版本化需求，再确认方案、路由、范围与风险。
@@ -212,6 +224,18 @@ This preset was not designed in one sitting. It is the result of ten iterations 
 | Open source | Sep 1 | r2.1 published in this repository | The ideas leave the author's machine |
 
 The full archaeology (11 mechanisms that were added and later removed, plus the plan/execution/review reports of every iteration) is kept in the author's private archive; this repository is the current open-source form of that lineage.
+
+## The ideas are not DSH-only
+
+At its core, this collaboration mode is a set of **host-agnostic engineering disciplines**; DSH is just the current carrier. When migrating to any harness that supports subagents (Claude Code, Codex, Kimi CLI, opencode…), what you actually take with you is:
+
+- **Two approval gates**: approve the requirement and the plan separately; no deliverable candidate exists before approval;
+- **Versioned state truth**: one CURRENT per workspace; approvals bind to revision and content digest — silence or "continue" is not approval;
+- **Candidate freeze**: deliverables are frozen by content addressing (commit hash / per-file sha256); any change produces a new candidate;
+- **Fresh Reviewer**: every review round runs in a brand-new context; the executor's own conclusion never counts as acceptance;
+- **Stop-loss discipline**: the same root cause gets at most two attempts, and each approval cycle at most three review rounds — then it is BLOCKED and waits for human judgment; renaming agents does not reset the count.
+
+In the CLI era, these disciplines were executed by relaying prompts by hand; in the DSH era, the preset dispatches subagents automatically. The carrier changed; the disciplines did not.
 
 ## Features
 
